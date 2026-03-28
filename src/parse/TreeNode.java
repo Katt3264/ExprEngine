@@ -1,4 +1,4 @@
-package treeParse;
+package parse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ public class TreeNode<T> {
 		return clone;
 	}
 	
+	@Override
 	public String toString()
 	{
 		String s = "";

@@ -41,5 +41,13 @@ public class StringMath {
 		BinaryString c = BinaryAlge.Mod(a, b);
 		return BinaryAlge.ToStringBigEndian(c, base);
 	}
+	
+	public static String exp(String s1, String s2, int base)
+	{
+		BinaryString a = BinaryAlge.FromStringBigEndian(s1, base);
+		BinaryString b = BinaryAlge.FromStringBigEndian(s2, base);
+		BinaryString c = BinaryAlge.Exp(a, b);
+		return BinaryAlge.ToStringBigEndian(c, base);
+	}
 
 }

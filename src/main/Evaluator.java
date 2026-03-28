@@ -3,7 +3,7 @@ package main;
 import java.util.Stack;
 
 import bigMath.StringMath;
-import treeParse.TreeNode;
+import parse.TreeNode;
 
 public class Evaluator {
 	
@@ -15,14 +15,17 @@ public class Evaluator {
 	 * (* a b) -> a * b
 	 * (/ a b) -> a / b
 	 * (% a b) -> a % b
-	 * 
+	 * (^ a b) -> a ^ b
 	 * 
 	 * TODO:
 	 * 
+	 * comparators and booleans
+	 * strings
+	 * 
 	 * (if a b c) -> b if a is true else c,
 	 * (eval STRING) -> returns the evaluation of string
-	 * 
-	 * 
+	 * (defun function (arg1 arg2 ...) (expression)) -> defines a function with arguments
+	 * (function arg1 arg2 ...) -> evaluates a function with given arguments
 	 * 
 	 */
 	
@@ -85,6 +88,10 @@ public class Evaluator {
 				String a = node.nodes.get(1).label;
 				String b = node.nodes.get(2).label;
 				node.label = StringMath.mod(a, b, 10);
+			} else if(op.equals("^")){
+				String a = node.nodes.get(1).label;
+				String b = node.nodes.get(2).label;
+				node.label = StringMath.exp(a, b, 10);
 			}
 			else
 			{

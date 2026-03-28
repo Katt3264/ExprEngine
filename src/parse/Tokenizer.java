@@ -1,4 +1,4 @@
-package lexer;
+package parse;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -158,6 +158,7 @@ public class Tokenizer {
 			appendChar(c);
 			state = State.EscapeInString;
 		} else if(c == '\"') {
+			appendChar(c);
 			appendToken();
 			state = State.EmptyToken;
 		} else {

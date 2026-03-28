@@ -32,9 +32,7 @@ public class BinaryAlge {
 	public static BinaryString Subtract(BinaryString a, BinaryString b)
 	{
 		if(Compare(a, b) == -1)
-		{
-			throw new RuntimeException("negative numbers not suported");
-		}
+			throw new RuntimeException("subtraction resulting in negative number");
 		
 		int log2a = LogBase2(a);
 		int log2b = LogBase2(b);
@@ -58,9 +56,8 @@ public class BinaryAlge {
 			
 			borrow = (s < 0);
 		}
-		if(borrow) {System.out.println("Subtraction results in negative value");}
 		
-		return borrow ? FromInt(0) : result;
+		return result;
 	}
 	
 	public static BinaryString Multiply(BinaryString a, BinaryString b)
@@ -80,7 +77,7 @@ public class BinaryAlge {
 		
 		for(int i = 0; i <= log2comp; i++)
 		{
-			if(!IsEvene(ShiftUp(comparor, -i)))
+			if(!IsEven(ShiftUp(comparor, -i)))
 			{
 				result = Add(result, ShiftUp(shiftor, i));
 			}
@@ -92,10 +89,7 @@ public class BinaryAlge {
 	public static BinaryString[] DivideRemainder(BinaryString a, BinaryString b)
 	{
 		if(Compare(b, FromInt(0)) == 0) 
-		{
-			System.out.println("Can not divide by 0!"); 
-			return new BinaryString[] {FromInt(0), FromInt(0)};
-		}
+			throw new RuntimeException("division by 0");
 		
 		BinaryString subtractor = a;
 		BinaryString result = FromInt(0);
@@ -124,6 +118,27 @@ public class BinaryAlge {
 	public static BinaryString Mod(BinaryString a, BinaryString mod)
 	{
 		return DivideRemainder(a, mod)[1];
+	}
+	
+	public static BinaryString Exp(BinaryString b, BinaryString e)
+	{
+		if(Compare(b, FromInt(0)) == 0 && Compare(e, FromInt(0)) == 0)
+			throw new RuntimeException("0 ^ 0 is undefined");
+		
+		if(Compare(b, FromInt(0)) == 0)
+			return FromInt(0);
+		
+		if(Compare(e, FromInt(0)) == 0)
+			return FromInt(1);
+		
+		if(IsEven(e)) 
+		{
+			return Exp(Multiply(b, b), Divide(e, FromInt(2)));
+		}
+		else
+		{
+			return Multiply(b, Exp(Multiply(b, b), Divide(Subtract(e, FromInt(1)), FromInt(2))));
+		}
 	}
 	
 	public static BinaryString GCD(BinaryString a, BinaryString b)	//not safe
@@ -158,7 +173,7 @@ public class BinaryAlge {
 		return result;
 	}
 	
-	public static boolean IsEvene(BinaryString b)
+	public static boolean IsEven(BinaryString b)
 	{
 		return !b.GetBit(0);
 	}

@@ -1,26 +1,16 @@
 package main;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
+import java.io.FileNotFoundException;
 
-import iterators.StringCharacterIterator;
-import lexer.Tokenizer;
-import treeParse.TreeExprParser;
-import treeParse.TreeNode;
+import proofEngine.Node;
+import proofEngine.Utility;
 
 public class Main {
-
-	public static void main(String[] args) {
+	
+	public static void main(String[] args) throws FileNotFoundException {
 		
-		Scanner sc = new Scanner(System.in);
-		String parse = sc.nextLine();
-		sc.close();
+		Node node = Utility.nodeFromFile("resources/axioms.txt");
 		
-		Iterator<Character> chars = new StringCharacterIterator(parse);
-		List<String> tokens = new Tokenizer(chars).tokenize();
-		TreeNode<String> node = TreeExprParser.parseExpr(tokens);
-		System.out.println("EXPR: " + node);
-		new Evaluator(node).Evaluate(node);
+		System.out.println(node);
 	}
 }
