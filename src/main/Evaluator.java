@@ -1,9 +1,19 @@
 package main;
 
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Scanner;
 import java.util.Stack;
 
 import bigMath.StringMath;
+import iterators.FileCharacterIterator;
+import iterators.StringCharacterIterator;
+import parse.PrimitiveTokenizer;
+import parse.Tokenizer;
+import parse.TreeExprParser;
 import parse.TreeNode;
+import proofEngine.Node;
 
 public class Evaluator {
 	
@@ -29,14 +39,24 @@ public class Evaluator {
 	 * 
 	 */
 	
-	TreeNode<String> root;
-	
-	public Evaluator(TreeNode<String> root)
+	public static void main(String[] args)
 	{
-		this.root = root;
+		Scanner scanner = new Scanner(System.in);
+		String expr = scanner.nextLine();
+		Iterator<Character> chars = new StringCharacterIterator(expr);
+		List<String> tokens = new Tokenizer(chars).tokenize();
+		TreeNode<String> node = TreeExprParser.parseExpr(tokens);
+		System.out.println(Evaluate(node));
 	}
 	
-	public void Evaluate(TreeNode<String> evalNode)
+	//TreeNode<String> root;
+	
+	/*public Evaluator(TreeNode<String> root)
+	{
+		this.root = root;
+	}*/
+	
+	/*public static String Evaluate(TreeNode<String> evalNode)
 	{
 		Stack<TreeNode<String>> stack = new Stack<TreeNode<String>>();
 		stack.push(evalNode);
@@ -52,46 +72,36 @@ public class Evaluator {
 			if(stack.peek() == node)
 			{
 				stack.pop();
-				nodeEvaluation(node);
-				System.out.println("EVAL: " + root);
+				String s = nodeEvaluation(node);
+				//System.out.println("EVAL: " + root);
 			}
 		}
-	}
+	}*/
 	
-	private void nodeEvaluation(TreeNode<String> node)
+	private static String Evaluate(TreeNode<String> node)
 	{
 		if(node.nodes.size() == 0)
 		{
-			// this is a leaf node
+			return node.label;
 		}
 		else if(node.nodes.size() == 3)
 		{
 			String op = node.nodes.get(0).label;
+			String a = Evaluate(node.nodes.get(1));
+			String b = Evaluate(node.nodes.get(2));
 			
 			if(op.equals("+")){
-				String a = node.nodes.get(1).label;
-				String b = node.nodes.get(2).label;
-				node.label = StringMath.add(a, b, 10);
+				return StringMath.add(a, b, 10);
 			} else if(op.equals("-")){
-				String a = node.nodes.get(1).label;
-				String b = node.nodes.get(2).label;
-				node.label = StringMath.sub(a, b, 10);
+				return StringMath.sub(a, b, 10);
 			} else if(op.equals("*")){
-				String a = node.nodes.get(1).label;
-				String b = node.nodes.get(2).label;
-				node.label = StringMath.mul(a, b, 10);
+				return StringMath.mul(a, b, 10);
 			} else if(op.equals("/")){
-				String a = node.nodes.get(1).label;
-				String b = node.nodes.get(2).label;
-				node.label = StringMath.div(a, b, 10);
+				return StringMath.div(a, b, 10);
 			} else if(op.equals("%")){
-				String a = node.nodes.get(1).label;
-				String b = node.nodes.get(2).label;
-				node.label = StringMath.mod(a, b, 10);
+				return StringMath.mod(a, b, 10);
 			} else if(op.equals("^")){
-				String a = node.nodes.get(1).label;
-				String b = node.nodes.get(2).label;
-				node.label = StringMath.exp(a, b, 10);
+				return StringMath.exp(a, b, 10);
 			}
 			else
 			{
