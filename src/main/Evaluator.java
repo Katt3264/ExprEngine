@@ -39,6 +39,7 @@ public class Evaluator {
 	 * 
 	 */
 	
+	@SuppressWarnings("resource")
 	public static void main(String[] args)
 	{
 		Scanner scanner = new Scanner(System.in);
@@ -48,35 +49,6 @@ public class Evaluator {
 		TreeNode<String> node = TreeExprParser.parseExpr(tokens);
 		System.out.println(Evaluate(node));
 	}
-	
-	//TreeNode<String> root;
-	
-	/*public Evaluator(TreeNode<String> root)
-	{
-		this.root = root;
-	}*/
-	
-	/*public static String Evaluate(TreeNode<String> evalNode)
-	{
-		Stack<TreeNode<String>> stack = new Stack<TreeNode<String>>();
-		stack.push(evalNode);
-		
-		while(stack.size() != 0)
-		{
-			TreeNode<String> node = stack.peek();
-			for(TreeNode<String> n : node.nodes)
-			{
-				if(n.label == null)
-					stack.push(n);
-			}
-			if(stack.peek() == node)
-			{
-				stack.pop();
-				String s = nodeEvaluation(node);
-				//System.out.println("EVAL: " + root);
-			}
-		}
-	}*/
 	
 	private static String Evaluate(TreeNode<String> node)
 	{
