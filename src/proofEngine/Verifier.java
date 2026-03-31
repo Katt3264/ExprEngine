@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import proofEngine.objects.Node;
+import proofEngine.objects.Rule;
+
 public class Verifier {
 
 	/*

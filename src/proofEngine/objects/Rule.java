@@ -1,4 +1,4 @@
-package proofEngine;
+package proofEngine.objects;
 
 public class Rule {
 	
@@ -16,5 +16,18 @@ public class Rule {
 		this.from = rule.nodes.get(0);
 		this.to = rule.nodes.get(1);
 	}
+	
+	public Node toNode()
+	{
+		Node node = new Node();
+		node.nodes.add(from);
+		node.nodes.add(to);
+		return node;
+	}
 
+	@Override
+	public String toString()
+	{
+		return toNode().toString();
+	}
 }

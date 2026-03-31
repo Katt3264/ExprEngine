@@ -3,6 +3,10 @@ package proofEngine;
 import java.util.ArrayList;
 import java.util.List;
 
+import proofEngine.objects.Node;
+import proofEngine.objects.Rule;
+import proofEngine.objects.Transform;
+
 public class ProofGenerator {
 	
 	/*
@@ -78,6 +82,76 @@ public class ProofGenerator {
 				acc.add(newExp);
 		}
 		return acc;
+	}
+	
+	/*
+	 * Searches for the transformation from src to dst
+	 * Returns null in no is found.
+	 */
+	public static Transform tryGetTransform(Node src, Node dst, List<Rule> rules)
+	{
+		List<Node> allLoc = getAllLoc(src);
+		
+		for(Rule rule : rules) 
+		{
+			for(Node loc : allLoc)
+			{
+				Node res = Verifier.tryApplyRuleAt(src, rule, loc);
+				
+				if(res != null)
+				{
+					if(Verifier.isEqual(res, dst)) 
+					{
+						return new Transform(loc, rule);
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	/*
+	 * Searches for the transformations from src to dst
+	 * Returns null in no is found.
+	 */
+	public static List<Transform> tryGetTransforms(Node src, Node dst, List<Rule> rules, int depth)
+	{
+		if(Verifier.isEqual(src, dst)) 
+			return new ArrayList<Transform>();
+		
+		if(depth == 0)
+			return null;
+		
+		List<Node> allLoc = getAllLoc(src);
+		
+		int shortestTransformList = depth + 1;
+		List<Transform> bestTransforms = null;
+		
+		for(Rule rule : rules) 
+		{
+			for(Node loc : allLoc)
+			{
+				Node res = Verifier.tryApplyRuleAt(src, rule, loc);
+				
+				if(res != null)
+				{
+					List<Transform> nextTransforms = tryGetTransforms(res, dst, rules, depth - 1);
+					
+					if(nextTransforms != null)
+					{
+						if(nextTransforms.size() < shortestTransformList)
+						{
+							shortestTransformList = nextTransforms.size();
+							bestTransforms = new ArrayList<Transform>();
+							bestTransforms.add(new Transform(loc, rule));
+							bestTransforms.addAll(nextTransforms);
+						}
+					}
+				}
+			}
+		}
+		
+		return bestTransforms;
 	}
 
 }

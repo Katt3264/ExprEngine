@@ -13,7 +13,7 @@ import parse.PrimitiveTokenizer;
 import parse.Tokenizer;
 import parse.TreeExprParser;
 import parse.TreeNode;
-import proofEngine.Node;
+import proofEngine.objects.Node;
 
 public class Evaluator {
 	
