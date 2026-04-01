@@ -14,28 +14,34 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException {
 		
 		List<Rule> axioms = Utility.rulesFromNode(Utility.nodeFromFile("resources/axioms.txt"));
-		List<Node> proof = Utility.nodeFromFile("resources/proof.txt").nodes;
+		List<Node> proofs = Utility.nodeFromFile("resources/proof.txt").nodes;
 		
-		
-		for(int i = 0; i < proof.size() - 1; i++)
+		for(Node proof : proofs)
 		{
-			Node src = proof.get(i);
-			Node dst = proof.get(i+1);
-			List<Transform> ts = ProofGenerator.tryGetTransforms(src, dst, axioms, 5);
-			if(ts != null)
+			System.out.println("Checking proof:");
+			for(int i = 0; i < proof.nodes.size() - 1; i++)
 			{
-				System.out.println("Transforms found:");
-				for(Transform t : ts) 
+				Node src = proof.nodes.get(i);
+				Node dst = proof.nodes.get(i+1);
+				List<Transform> ts = ProofGenerator.tryGetTransforms(src, dst, axioms, 10);
+				if(ts != null)
 				{
-					System.out.println(t);
+					System.out.println("Transforms found:");
+					for(Transform t : ts) 
+					{
+						System.out.println(t);
+					}
+				}
+				else
+				{
+					System.out.println("No transform found: " + src + " " + dst);
+					throw new RuntimeException("Invalid proof");
 				}
 			}
-			else
-			{
-				System.out.println("No transform found: " + src + " " + dst);
-			}
+			
+			// add this proof
+			axioms.add(new Rule(proof.nodes.get(0), proof.nodes.get(proof.nodes.size() - 1)));
 		}
-		
 		//System.out.println(node);
 	}
 }

@@ -31,28 +31,36 @@ public class ProofGenerator {
 	}
 	
 	/*
-	 * Gets all possible locations for a expression
+	 * Gets all locations where src and dst are different
 	 */
-	public static List<Node> getAllLoc(Node exp)
+	public static List<Node> getAllLocForDelta(Node src, Node dst)
 	{
 		List<Node> acc = new ArrayList<Node>();
 		Node loc = new Node();
 		loc.label = "?";
-		addAllLoc(exp, loc, acc);
+		addAllLocForDelta(src, dst, loc, acc);
 		return acc;
 	}
 	
 	/*
-	 * Adds all locations of a expression to accumulator
+	 * Adds all locations where src and dst are different to accumulator
 	 */
-	private static void addAllLoc(Node exp, Node supLoc, List<Node> acc)
+	private static void addAllLocForDelta(Node src, Node dst, Node supLoc, List<Node> acc)
 	{
+		if(Verifier.isEqual(src, dst))
+			return;
+		
 		acc.add(supLoc);
 		
-		for(int i = 0; i < exp.nodes.size(); i++)
+		// Resolve this node before subnodes
+		if(src.nodes.size() != dst.nodes.size())
+			return;
+		
+		
+		for(int i = 0; i < src.nodes.size(); i++)
 		{
 			Node newSubLoc = new Node();
-			for(int j = 0; j < exp.nodes.size(); j++)
+			for(int j = 0; j < src.nodes.size(); j++)
 			{
 				Node leaf = new Node();
 				if(i == j)
@@ -63,25 +71,9 @@ public class ProofGenerator {
 				newSubLoc.nodes.add(leaf);
 			}
 			Node newLoc = getLocInLoc(supLoc, newSubLoc);
-			addAllLoc(exp.nodes.get(i), newLoc, acc);
+			
+			addAllLocForDelta(src.nodes.get(i), dst.nodes.get(i), newLoc, acc);
 		}
-	}
-	
-	
-	/*
-	 * Gets all possible new expressions by applying rule to expression at every location
-	 */
-	public static List<Node> getAllRewrites(Node exp, Rule rule)
-	{
-		List<Node> acc = new ArrayList<Node>();
-		List<Node> locs = getAllLoc(exp);
-		for(Node loc : locs)
-		{
-			Node newExp = Verifier.tryApplyRuleAt(exp, rule, loc);
-			if(newExp != null)
-				acc.add(newExp);
-		}
-		return acc;
 	}
 	
 	/*
@@ -90,7 +82,7 @@ public class ProofGenerator {
 	 */
 	public static Transform tryGetTransform(Node src, Node dst, List<Rule> rules)
 	{
-		List<Node> allLoc = getAllLoc(src);
+		List<Node> allLoc = getAllLocForDelta(src, dst);
 		
 		for(Rule rule : rules) 
 		{
@@ -114,7 +106,7 @@ public class ProofGenerator {
 	 * Searches for the transformations from src to dst
 	 * Returns null in no is found.
 	 */
-	public static List<Transform> tryGetTransforms(Node src, Node dst, List<Rule> rules, int depth)
+	private static List<Transform> tryGetTransformsSlow(Node src, Node dst, List<Rule> rules, int depth)
 	{
 		if(Verifier.isEqual(src, dst)) 
 			return new ArrayList<Transform>();
@@ -122,7 +114,7 @@ public class ProofGenerator {
 		if(depth == 0)
 			return null;
 		
-		List<Node> allLoc = getAllLoc(src);
+		List<Node> allLoc = getAllLocForDelta(src, dst);
 		
 		int shortestTransformList = depth + 1;
 		List<Transform> bestTransforms = null;
@@ -152,6 +144,23 @@ public class ProofGenerator {
 		}
 		
 		return bestTransforms;
+	}
+	
+	/*
+	 * Searches for the transformations from src to dst
+	 * Returns null in no is found.
+	 */
+	public static List<Transform> tryGetTransforms(Node src, Node dst, List<Rule> rules, int maxDepth)
+	{
+		for(int i = 0; i <= maxDepth; i++)
+		{
+			List<Transform> res = tryGetTransformsSlow(src, dst, rules, i);
+			
+			if(res != null)
+				return res;
+		}
+		
+		return null;
 	}
 
 }
