@@ -8,6 +8,7 @@ public class PrimitiveTokenizer {
 	
 	private static final String spacer = " \n\t";
 	
+	private boolean inComment = false;
 	private String currentToken = "";
 	private List<String> tokens = new ArrayList<String>();
 	private Iterator<Character> charIter;
@@ -41,7 +42,18 @@ public class PrimitiveTokenizer {
 	
 	private void consume(int c)
 	{
-		if(c == -1)
+		if(inComment)
+		{
+			if(c == '\n')
+				inComment = false;
+		}
+		else if(c == '#')
+		{
+			inComment = true;
+			if(currentToken.length() != 0)
+				appendToken();
+		}
+		else if(c == -1)
 		{
 			if(currentToken.length() != 0)
 				appendToken();
