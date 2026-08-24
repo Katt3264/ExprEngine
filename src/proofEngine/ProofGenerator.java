@@ -78,7 +78,7 @@ public class ProofGenerator {
 	
 	/*
 	 * Searches for the transformation from src to dst
-	 * Returns null in no is found.
+	 * Returns null if no is found.
 	 */
 	public static Transform tryGetTransform(Node src, Node dst, List<Rule> rules)
 	{
@@ -104,7 +104,7 @@ public class ProofGenerator {
 	
 	/*
 	 * Searches for the transformations from src to dst
-	 * Returns null in no is found.
+	 * Returns null if no is found.
 	 */
 	private static List<Transform> tryGetTransformsSlow(Node src, Node dst, List<Rule> rules, int depth)
 	{
@@ -148,7 +148,7 @@ public class ProofGenerator {
 	
 	/*
 	 * Searches for the transformations from src to dst
-	 * Returns null in no is found.
+	 * Returns null if no is found.
 	 */
 	public static List<Transform> tryGetTransforms(Node src, Node dst, List<Rule> rules, int maxDepth)
 	{
