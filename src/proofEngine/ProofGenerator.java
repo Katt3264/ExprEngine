@@ -162,5 +162,28 @@ public class ProofGenerator {
 		
 		return null;
 	}
-
+	
+	/*
+	 * Searches for the transformations for a list of intermediate expressions
+	 * Returns null if no is found.
+	 */
+	public static List<Transform> tryGetTransforms(List<Node> exprs, List<Rule> rules)
+	{
+		List<Transform> transforms = new ArrayList<Transform>();
+		for(int i = 0; i < exprs.size() - 1; i++)
+		{
+			Node src = exprs.get(i);
+			Node dst = exprs.get(i+1);
+			List<Transform> ts = tryGetTransforms(src, dst, rules, 10);
+			if(ts != null)
+			{
+				transforms.addAll(ts);
+			}
+			else
+			{
+				return null;
+			}
+		}
+		return transforms;
+	}
 }

@@ -2,10 +2,13 @@ package proofEngine;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import proofEngine.objects.Node;
+import proofEngine.objects.Proof;
 import proofEngine.objects.Rule;
+import proofEngine.objects.Transform;
 
 public class Verifier {
 
@@ -169,4 +172,43 @@ public class Verifier {
 		}
 	}
 	
+	/*
+	 * Gets the resulting expression by applying a transform
+	 * Returns null if transform can not be applied
+	 */
+	public static Node tryApplyTransform(Node exp, Transform transform)
+	{
+		return tryApplyRuleAt(exp, transform.rule, transform.loc);
+	}
+	
+	/*
+	 * Checks if a proof is valid
+	 */
+	public static boolean isValidProof(Proof proof, List<Rule> validRules)
+	{
+		Node current = proof.src;
+		System.out.println(current);
+		for(Transform t : proof.transforms)
+		{
+			boolean isValidRule = false;
+			for(Rule r : validRules)
+			{
+				if(isEqual(r.toNode(), t.rule.toNode()))
+					isValidRule = true;
+			}
+			
+			if(!isValidRule)
+				return false;
+			
+			Node next = tryApplyTransform(current, t);
+			
+			if(next == null)
+				return false;
+			
+			System.out.println(next);
+			current = next;
+		}
+		
+		return isEqual(current, proof.dst);
+	}
 }
